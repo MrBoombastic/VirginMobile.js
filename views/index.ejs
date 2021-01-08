@@ -1,0 +1,28 @@
+<!-- Section here is mainly in Polish, sorry! -->
+<script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+<% const b2s = t => {
+    let e = Math.log2(t) / 10 | 0;
+    return (t / 1024 ** (e = e <= 0 ? 0 : e)).toFixed(3) + " " + "BKMGP"[e + 1] + "B"
+}; %>
+<% let phoneNumber = msisdnDetails.forEach(number => { %>
+    Numer telefonu: <%= number.msisdn %> <br>
+    Ważność konta:
+    <div style="display: inline" id="<%= number.msisdn %>ValidDate"></div><br>
+    <script>document.getElementById("<%= number.msisdn %>ValidDate").textContent = dayjs("<%= number.customerBalancesDto.generalBalance.validDate %>").format("DD/MM/YYYY");</script>
+    Stan konta: <%= number.customerBalancesDto.generalBalance.quantity %>zł <br>
+    Nazwa taryfy: <%= number.tariffName %> <br>
+    Nazwa pakietu dodatkowego: <%= number.complexBundleName %> <br>
+    Ważność pakietu dodatkowego:
+    <div style="display: inline" id="<%= number.msisdn %>BundleValidDate"></div> <br>
+    <script>document.getElementById("<%= number.msisdn %>BundleValidDate").textContent = dayjs("<%= number.complexBundleValidDate %>").format("DD/MM/YYYY");</script>
+    Stan minut: <%= Math.round(number.customerBalancesDto.complexBundleVoiceBalance.quantity / 60) %> minut => <%= number.customerBalancesDto.complexBundleVoiceBalance.quantity %> sekund
+    <br>
+    Stan Internetu: <%= b2s(number.customerBalancesDto.dataBalance.quantity) %><br>
+    Stan SMS: <%= number.customerBalancesDto.smsBalance.quantity %> <br>
+    <br>
+<% }) %>
+
+<br>
+Data aktualizacji:
+<div id="updateTime" style="display: inline"></div>
+<script> document.getElementById("updateTime").textContent = dayjs(<%= updateTimestamp %>).format("YYYY-MM-DD HH:mm:ss"); </script>
