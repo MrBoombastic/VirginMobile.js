@@ -8,6 +8,7 @@ const proxy = {url: "http://localhost", port: 8001};
 const loginData = `username=${username}&password=${password}`;
 
 module.exports = {
+    username, password,
     api: {
         url: "https://virginmobile.pl/spitfire-web-api/api/v1/",
         login: "authentication/login",
