@@ -8,8 +8,7 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 app.set('view engine', 'ejs');
-
-if(!config.username || !config.password) return console.error("Please populate username and password in config.js!")
+if (!config.username || !config.password) return console.error("Please populate username and password in config.js!");
 const b2s = t => { //Converting KB to anything greater
     let e = Math.log2(t) / 10 | 0;
     return (t / 1024 ** (e = e <= 0 ? 0 : e)).toFixed(3) + " " + "BKMGP"[e + 1] + "B";
@@ -21,7 +20,8 @@ const saveVMData = async () => { //Fetching and saving data
     const response = await fetch(config.api.url + config.api.details, config.VMconfigs.fullDetails);
     if (response.status !== 200) {
         console.error("Error fetching data from VM! Deleting cookie to force re-login next time.");
-        return fs.unlinkSync("./cookie.txt");
+        fs.unlinkSync("./cookie.txt");
+        return await VMhello();
     }
     const body = await response.json();
     body.updateTimestamp = Date.now();
@@ -44,10 +44,6 @@ const saveVMData = async () => { //Fetching and saving data
 };
 
 const VMhello = async () => {
-    if (fs.existsSync("./cookie.txt")) { //if cookie exists, skip logging in and fetch data
-        await saveVMData();
-        return setInterval(saveVMData, 1000 * 60 * 5); //5 mins
-    }
     const response = await fetch(config.api.url + config.api.login, config.VMconfigs.login);
     if (response.status !== 200) return console.error("Error while logging in. Aborting now!");
     fs.writeFileSync("./cookie.txt", response.headers.get('set-cookie').split('; ')[0]);
@@ -59,7 +55,7 @@ app.get('/', async (req, res) => {
     res.render("./index.ejs", JSON.parse(fs.readFileSync("./VMdata.json"))); //using 'require' caches data, doing fs instead
 });
 
-app.listen(config.serverOptions.port, () => console.log(`Server listening at port ${config.serverOptions.port}`));
+if (config.serverOptions.enabled) app.listen(config.serverOptions.port, () => console.log(`Server listening at port ${config.serverOptions.port}`));
 
 proxyServer.start(); //starting mitm proxy and decrypting messages
 proxyServer.on('error', (e) => console.error(e));

@@ -20,6 +20,7 @@ module.exports = {
         silent: true
     },
     serverOptions: {
+        enabled: false,
         port: 80    //for express.js server, feel free to change it
     },
     VMconfigs: {

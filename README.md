@@ -6,5 +6,6 @@
 
 Edit config.js and enter your login and password. Install Node.js and run `npm i` in root directory. Then
 run `anyproxy-ca` in your terminal and launch app by `node index.js`. Response will be stored in VMdata.json and VMdata-human.txt.
+If you want, you can adjust config.js to enable simple webserver showing same thing as in "human" text file.
 
 Some portions of this app are in Polish (only some output), because this app works only with Virgin Mobile in Poland. But they are comments in index.js to clarify meaning, if you want.
